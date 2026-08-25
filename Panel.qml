@@ -89,6 +89,7 @@ Panel {
   function persistLayout(index) {
     var layout = String(configured[index] || "").toLowerCase()
     if (!layout) return
+    persistedLayout = layout
     Quickshell.execDetached([
       "bash", "-c",
       "set -e; mkdir -p \"$1\"; printf '%s\\n' \"$2\" > \"$1/layout\"",
@@ -97,13 +98,10 @@ Panel {
   }
 
   function restoreLayout() {
-    if (restoreAttempted || !stateLoaded || !devicesLoaded || !root.bar) return
+    if (restoreAttempted || !stateLoaded || !devicesLoaded || !root.bar || root.sessionLocked) return
     restoreAttempted = true
     var index = configured.indexOf(persistedLayout)
-    if (index >= 0 && index !== activeIndex) {
-      root.bar.run("hyprctl switchxkblayout all " + index)
-      refreshTimer.restart()
-    }
+    if (index >= 0 && index !== activeIndex) root.bar.run("hyprctl switchxkblayout all " + index)
   }
 
   function updateInputFile(operation, value) {
@@ -242,17 +240,12 @@ Panel {
       waitForEnd: true
       onStreamFinished: {
         try {
-          var hadDevices = root.devicesLoaded
           var state = Model.configuredLayouts(JSON.parse(text || "{}"))
           root.keyboardName = state.keyboard
           root.configured = state.layouts
           root.activeIndex = state.activeIndex
           root.devicesLoaded = true
-          if (!hadDevices) root.restoreLayout()
-          else if (!root.sessionLocked) {
-            if (!root.restoreAttempted) root.restoreLayout()
-            else root.persistLayout(state.activeIndex)
-          }
+          if (!root.restoreAttempted) root.restoreLayout()
           root.updateDisplayedCatalog()
         } catch (e) { }
       }
@@ -292,14 +285,11 @@ Panel {
       onStreamFinished: {
         var locked = false
         try { locked = JSON.parse(String(text || "{}")).locked === true } catch (e) { return }
-        if (locked !== root.sessionLocked) {
-          var wasLocked = root.sessionLocked
-          root.sessionLocked = locked
-          if (wasLocked && !locked) {
-            root.restoreAttempted = false
-            root.refreshDevices()
-          }
+        if (root.sessionLocked && !locked) {
+          root.restoreAttempted = false
+          root.refreshDevices()
         }
+        root.sessionLocked = locked
       }
     }
   }
