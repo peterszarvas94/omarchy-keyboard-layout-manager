@@ -421,27 +421,23 @@ Panel {
         }
 
         PanelSectionHeader { text: "ADD LAYOUT"; foreground: root.foreground; fontFamily: root.fontFamily; visible: displayedCatalogModel.count > 0 }
-        ScrollView {
+        ListView {
+          id: catalogList
           Layout.fillWidth: true
           Layout.fillHeight: true
           clip: true
-          Column {
-            width: parent.width
-            Repeater {
-              model: displayedCatalogModel
-              CursorSurface {
-                required property string layoutCode
-                required property string layoutDescription
-                required property int index
-                width: parent.width
-                implicitHeight: Style.space(40)
-                foreground: root.foreground
-                hasCursor: root.cursorActive && root.selectedRow === root.configured.length + index
-                Text { anchors.left: parent.left; anchors.leftMargin: Style.space(10); anchors.right: addButton.left; anchors.rightMargin: Style.space(6); anchors.verticalCenter: parent.verticalCenter; text: Model.layoutLabel(layoutCode) + "  " + layoutDescription; color: root.foreground; font.family: root.fontFamily; font.pixelSize: Style.font.body; elide: Text.ElideRight }
-                MouseArea { anchors.fill: parent; onClicked: root.addLayout({ code: layoutCode, description: layoutDescription }) }
-                PanelActionButton { id: addButton; anchors.right: parent.right; anchors.rightMargin: Style.space(6); anchors.verticalCenter: parent.verticalCenter; iconText: ""; tooltipText: "Add layout"; foreground: root.foreground; fontFamily: root.fontFamily; hasCursor: root.cursorActive && root.selectedRow === root.configured.length + index && root.selectedButton === 0; onClicked: root.addLayout({ code: layoutCode, description: layoutDescription }) }
-              }
-            }
+          model: displayedCatalogModel
+          delegate: CursorSurface {
+            required property string layoutCode
+            required property string layoutDescription
+            required property int index
+            width: catalogList.width
+            implicitHeight: Style.space(40)
+            foreground: root.foreground
+            hasCursor: root.cursorActive && root.selectedRow === root.configured.length + index
+            Text { anchors.left: parent.left; anchors.leftMargin: Style.space(10); anchors.right: addButton.left; anchors.rightMargin: Style.space(6); anchors.verticalCenter: parent.verticalCenter; text: Model.layoutLabel(layoutCode) + "  " + layoutDescription; color: root.foreground; font.family: root.fontFamily; font.pixelSize: Style.font.body; elide: Text.ElideRight }
+            MouseArea { anchors.fill: parent; onClicked: root.addLayout({ code: layoutCode, description: layoutDescription }) }
+            PanelActionButton { id: addButton; anchors.right: parent.right; anchors.rightMargin: Style.space(6); anchors.verticalCenter: parent.verticalCenter; iconText: ""; tooltipText: "Add layout"; foreground: root.foreground; fontFamily: root.fontFamily; hasCursor: root.cursorActive && root.selectedRow === root.configured.length + index && root.selectedButton === 0; onClicked: root.addLayout({ code: layoutCode, description: layoutDescription }) }
           }
         }
       }
