@@ -425,6 +425,8 @@ Panel {
           id: catalogList
           Layout.fillWidth: true
           Layout.fillHeight: true
+          Layout.minimumHeight: Style.space(200)
+          implicitHeight: Style.space(200)
           clip: true
           model: displayedCatalogModel
           delegate: CursorSurface {
