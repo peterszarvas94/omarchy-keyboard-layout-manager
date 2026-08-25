@@ -1,0 +1,18 @@
+{
+  "schemaVersion": 1,
+  "id": "io.github.peterszarvas94.keyboard-layout-manager",
+  "version": "1.0.0",
+  "name": "Keyboard Layout Manager",
+  "author": "Peter Szarvas",
+  "license": "MIT",
+  "description": "Add, remove, and switch Hyprland keyboard layouts.",
+  "kinds": ["bar-widget"],
+  "entryPoints": { "barWidget": "SettingsWidget.qml" },
+  "barWidget": {
+    "displayName": "Keyboard Layouts",
+    "description": "Manage configured keyboard layouts.",
+    "category": "Compositor",
+    "allowMultiple": false,
+    "defaultSection": "right"
+  }
+}
