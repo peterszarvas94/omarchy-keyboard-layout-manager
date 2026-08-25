@@ -360,12 +360,12 @@ Panel {
           foreground: root.foreground
           accent: root.accent
           font.family: root.fontFamily
-          onTextChanged: Qt.callLater(function() {
+          onTextChanged: {
             var query = searchField.text.trim().toLowerCase()
             root.searchQuery = query
             root.updateDisplayedCatalog(query)
             root.clampCursor()
-          })
+          }
           Keys.onPressed: function(event) {
             if (event.key === Qt.Key_Escape) { root.close(); event.accepted = true }
             else if (event.key === Qt.Key_Down) {
